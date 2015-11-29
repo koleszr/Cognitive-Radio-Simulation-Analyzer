@@ -5,14 +5,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import hu.bme.analyzer.CollisionAnalyzer;
-import hu.bme.utils.UtilityConstants;
 
 public class App {
+	
+	private static Properties props;
 	
 	public static void main(String[] args) {
 		if (args.length > 0) {
@@ -43,12 +46,23 @@ public class App {
 		}
 	}
 	
+	public static void initProperties() {
+    	ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    	props = new Properties();
+    	
+    	try(InputStream stream = loader.getResourceAsStream("simulation.properties")) {
+    		props.load(stream);
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void analyzeCollisions() {
 
 		PrintStream out = null;
 		
-		try (BufferedReader br = new BufferedReader(new FileReader(new File(UtilityConstants.DOCUMENT_NAME_FILE)))) {
-			out = new PrintStream(new File(UtilityConstants.SIMULATION_OUTPUT_PATH + "collision_simulation1.txt"));
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(props.getProperty("DOCUMENT_NAME_FILE"))))) {
+			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH ")+ "collision_simulation1.txt"));
 			
 			for (int i = 0; i < 16; i++) {
 				StringBuilder sb = new StringBuilder();
@@ -74,7 +88,7 @@ public class App {
 	}
 	
 	public static void analyzeCollisionsByPhasesAndStrategies(List<String> docNamesByStrategies) {
-		try (PrintStream out = new PrintStream(new File(UtilityConstants.SIMULATION_OUTPUT_PATH + "longCollision_simulation.txt"))) {
+		try (PrintStream out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH ") + "longCollision_simulation.txt"))) {
 			for (String docName : docNamesByStrategies) {
 				CollisionAnalyzer analyzer = new CollisionAnalyzer(out);
 				analyzer.analyzeCollisionsByStrategyAndPhase(docName);

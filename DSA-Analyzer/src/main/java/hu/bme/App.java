@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.Properties;
 
 import hu.bme.analyzer.CollisionAnalyzer;
+import hu.bme.analyzer.ContentionAnalyzer;
 
 public class App {
 	
 	private static Properties props;
 	
 	public static void main(String[] args) {
+		initProperties();
+		
 		if (args.length > 0) {
 			int n = Integer.parseInt(args[0]);
 			
@@ -37,6 +40,10 @@ public class App {
 						"rnd_[0-4]"
 					);
 				analyzeCollisionsByPhasesAndStrategies(docNamesByStrategies);
+				break;
+			case 3:
+				ContentionAnalyzer analyzer = new ContentionAnalyzer(Double.valueOf(props.getProperty("limit")));
+				analyzer.analyze();
 				break;
 			default:
 				System.out.println("Parameter usage: ");

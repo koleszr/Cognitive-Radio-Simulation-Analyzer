@@ -1,5 +1,9 @@
 package hu.bme.dsl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
@@ -8,8 +12,7 @@ import com.mongodb.client.MongoDatabase;
 
 public class DataStore {
 	
-	private static final String THESIS_DB = "thesis";
-	private static final String SIMULATIONS_COLLECTION = "longSimulations";
+	private Properties props;
 	
 	private MongoClient client;
 	private MongoDatabase db;
@@ -24,9 +27,10 @@ public class DataStore {
 	 * database and to simulations collection.
 	 */
 	public void init() {
+		initProperties();
 		client = new MongoClient();
-		db = client.getDatabase(THESIS_DB);
-		documents = db.getCollection(SIMULATIONS_COLLECTION);
+		db = client.getDatabase(props.getProperty("THESIS_DB"));
+		documents = db.getCollection(props.getProperty("SIMULATIONS_COLLECTION"));
 	}
 
 	public MongoClient getClient() {
@@ -51,5 +55,16 @@ public class DataStore {
 
 	public void setDocuments(MongoCollection<Document> documents) {
 		this.documents = documents;
+	}
+	
+	private void initProperties() {
+    	ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    	props = new Properties();
+    	
+    	try(InputStream stream = loader.getResourceAsStream("simulation.properties")) {
+    		props.load(stream);
+    	} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

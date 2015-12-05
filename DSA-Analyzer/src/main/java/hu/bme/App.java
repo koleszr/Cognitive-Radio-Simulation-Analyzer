@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import hu.bme.analyzer.CollisionAnalyzer;
 import hu.bme.analyzer.ContentionAnalyzer;
+import hu.bme.analyzer.UtilityAnalyzer;
 
 public class App {
 	
@@ -45,10 +46,15 @@ public class App {
 				ContentionAnalyzer analyzer = new ContentionAnalyzer(Double.valueOf(props.getProperty("limit")));
 				analyzer.analyze();
 				break;
+			case 4:
+				analyzeUtilities();
+				break;
 			default:
 				System.out.println("Parameter usage: ");
 				System.out.println("1 - collision analysis depending on user and channel number");
 				System.out.println("2 - collision analysis depending on strategy and phases");
+				System.out.println("3 - contention analysis");
+				System.out.println("4 - utility analysis");
 			}
 		}
 	}
@@ -64,12 +70,12 @@ public class App {
 		}
 	}
 	
-	public static void analyzeCollisions() {
+	private static void analyzeCollisions() {
 
 		PrintStream out = null;
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(props.getProperty("DOCUMENT_NAME_FILE"))))) {
-			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH ")+ "collision_simulation1.txt"));
+			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "collision_simulation1.txt"));
 			
 			for (int i = 0; i < 16; i++) {
 				StringBuilder sb = new StringBuilder();
@@ -94,7 +100,7 @@ public class App {
 		}
 	}
 	
-	public static void analyzeCollisionsByPhasesAndStrategies(List<String> docNamesByStrategies) {
+	private static void analyzeCollisionsByPhasesAndStrategies(List<String> docNamesByStrategies) {
 		try (PrintStream out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH ") + "longCollision_simulation.txt"))) {
 			for (String docName : docNamesByStrategies) {
 				CollisionAnalyzer analyzer = new CollisionAnalyzer(out);
@@ -103,6 +109,40 @@ public class App {
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Analyzes the utilities of the cognitive radios
+	 * read from the MongoDB database.
+	 * The output will be printed to the given file.
+	 */
+	private static void analyzeUtilities() {
+		PrintStream out = null;
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(props.getProperty("DOCUMENT_NAME_FILE"))))) {
+			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "utilities_simulation.txt"));
+			
+			UtilityAnalyzer utilityAnalyzer = new UtilityAnalyzer(out);
+			String docName = null;
+			
+			System.out.println("Started analyzing utilities!");
+			
+			while ((docName = br.readLine()) != null) {
+				utilityAnalyzer.analyze(docName);				
+			}
+			
+			System.out.println("Stopped analyzing utilities!");
+			
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		} 
+		finally {
+			out.close();
 		}
 	}
 }

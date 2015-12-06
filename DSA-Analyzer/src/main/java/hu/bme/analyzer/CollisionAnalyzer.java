@@ -80,7 +80,7 @@ public class CollisionAnalyzer {
 			
 			Document phaseMatch = new Document("$match", 
 					new Document("collisions.name", 
-							new Document("$regex", "[A-Z]+_PHASE_(?:[0-9]{1,2}_){0,1}0$")
+							new Document("$regex", "[A-Z]+_PHASE_(?:[0-9]{1,3}_){0,1}0$")
 							)
 					);
 			

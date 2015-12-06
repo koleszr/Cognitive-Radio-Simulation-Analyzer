@@ -75,7 +75,7 @@ public class App {
 		PrintStream out = null;
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(props.getProperty("DOCUMENT_NAME_FILE"))))) {
-			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "collision_simulation1.txt"));
+			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "collision_simulation3.txt"));
 			
 			for (int i = 0; i < 16; i++) {
 				StringBuilder sb = new StringBuilder();
@@ -101,7 +101,7 @@ public class App {
 	}
 	
 	private static void analyzeCollisionsByPhasesAndStrategies(List<String> docNamesByStrategies) {
-		try (PrintStream out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH ") + "longCollision_simulation.txt"))) {
+		try (PrintStream out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH") + "longCollision_simulation1.txt"))) {
 			for (String docName : docNamesByStrategies) {
 				CollisionAnalyzer analyzer = new CollisionAnalyzer(out);
 				analyzer.analyzeCollisionsByStrategyAndPhase(docName);
@@ -121,7 +121,7 @@ public class App {
 		PrintStream out = null;
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(props.getProperty("DOCUMENT_NAME_FILE"))))) {
-			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "utilities_simulation.txt"));
+			out = new PrintStream(new File(props.getProperty("SIMULATION_OUTPUT_PATH")+ "utilities_simulation1.txt"));
 			
 			UtilityAnalyzer utilityAnalyzer = new UtilityAnalyzer(out);
 			String docName = null;
